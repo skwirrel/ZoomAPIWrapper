@@ -32,11 +32,21 @@ Then you need to choose the JWT option for "server-to-server integration". Once 
 Usage
 =====
 
+To make a call to the API you need to know the following things:
+- The type of HTTP request (GET, POST, PATCH, DELETE)
+- The path of the endpoint you want to call
+- Any query parameters: query_paramater_array
+- Any parameters that go into making up the path: path_parameter_array
+- Any body content: request_body_array_or_string
+
+All of these are nicely documented for you in the Zoom API Reference here:
+https://marketplace.zoom.us/docs/api-reference/zoom-api
+
     $zoom = new ZoomAPIWrapper( <API_key>, <API_secret> );
   
     $response = $zoom->doRequest(<METHOD>, <endpoint_path> [,<query_parameter_array> [,<path_parameter_array> [,<request_body_array_or_string>] ] ]);
-  
-    // $response is false if there is a problem with the request e.g. path includes a request parameter which hasn't been specified in the request_parameter_array
+    // <endpoint_path> is the path exactly as given in the Zoom API reference (including curly braces) e.g. "/users/{userId}/assistants"
+    // $response is false if there is a problem with the request e.g. endpoint_path includes a parameter which hasn't been specified in the path_parameter_array
     // N.B. Remember to test with '$response === false' as in some cases a successful call will result in an empty string for $response
     // If you want details of the nature of the problem with your request you can get an array of errors like this...
     if ( $response===false ) {
