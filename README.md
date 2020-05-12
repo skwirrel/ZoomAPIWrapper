@@ -32,23 +32,23 @@ Then you need to choose the JWT option for "server-to-server integration". Once 
 Usage
 =====
 
-  $zoom = new ZoomAPIWrapper( <API_key>, <API_secret> );
+    $zoom = new ZoomAPIWrapper( <API_key>, <API_secret> );
   
-  $response = $zoom->doRequest(<METHOD>, <endpoint_path> [,<query_parameter_array> [,<path_parameter_array> [,<request_body_array_or_string>] ] ]);
+    $response = $zoom->doRequest(<METHOD>, <endpoint_path> [,<query_parameter_array> [,<path_parameter_array> [,<request_body_array_or_string>] ] ]);
   
-  // $response is false if there is a problem with the request e.g. path includes a request parameter which hasn't been specified in the request_parameter_array
-  // N.B. Remember to test with '$response === false' as in some cases a successful call will result in an empty string for $response
-  // If you want details of the nature of the problem with your request you can get an array of errors like this...
-  if ( $response===false ) {
-    $errors = $zoom->requestErrors();
-  }
+    // $response is false if there is a problem with the request e.g. path includes a request parameter which hasn't been specified in the request_parameter_array
+    // N.B. Remember to test with '$response === false' as in some cases a successful call will result in an empty string for $response
+    // If you want details of the nature of the problem with your request you can get an array of errors like this...
+    if ( $response===false ) {
+        $errors = $zoom->requestErrors();
+    }
 
-  // If there were no errors (i.e. $response!==false) you can still call requestErrors() - it will return an empty array
+    // If there were no errors (i.e. $response!==false) you can still call requestErrors() - it will return an empty array
 
-  // If the request goes ahead then $response will contain the decoded response from Zoom
+    // If the request goes ahead then $response will contain the decoded response from Zoom
   
-  // If you want to know the HTTP response code you can get it like this...
-  $httpResponse = $zoom->responseCode();
+    // If you want to know the HTTP response code you can get it like this...
+    $httpResponse = $zoom->responseCode();
   
   
 Examples
