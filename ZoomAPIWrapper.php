@@ -31,12 +31,13 @@ Usage:
 
 $zoom = new ZoomAPIWrapper( '<your API key>', '<your API secret>' );
 
-// It is up to you to use the right method, path and specify the request parameters
+// It is up to you to use the right method, path and specify the path parameters
 // to match the {placeholders} in the path.
 // You can find all the details of method, path, placholders and body content in the Zoom
 // API reference docs here: https://marketplace.zoom.us/docs/api-reference/zoom-api
+// $queryParameters,$requestParameters,$bodyContent are all optional
 
-$response = $zoom->doRequest('GET','/accounts/{accountId}/recordings',array('accountId'=>'me'));
+$response = $zoom->doRequest($method,$path,$queryParameters,$requestParameters,$bodyContent);
 
 if ($response === false) {
     // There was an error before the request was event sent to the api

@@ -33,7 +33,7 @@ Usage
 =====
 
 To make a call to the API you need to know the following things:
-- The type of HTTP request (GET, POST, PATCH, DELETE)
+- The HTTP request method (GET, POST, PATCH, DELETE)
 - The path of the endpoint you want to call
 - Any query parameters: query_paramater_array
 - Any parameters that go into making up the path: path_parameter_array
