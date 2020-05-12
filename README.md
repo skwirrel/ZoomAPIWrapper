@@ -13,7 +13,7 @@ The class handles API authentication for you, as well as setting up the relevant
 What it Doesn't Do
 ------------------
 
-*Compose body data*: When the endpoint your are calling requires the request body you are sending to include JSON data it is up to you to compose the required data (either as a PHP data structure or as a JSON data string)
+*Compose body data for you*: When the endpoint your are calling requires the request body you are sending to include JSON data it is up to you to compose the required data (either as a PHP data structure or as a JSON data string)
 
 *Handle pagination for you*: Most list endpoints support pagination of results. This wrapper doesn't automatically make multiple requests to get all the pages for you. If the results of your API call fills a page, then it is up to you to make another call for the next page of results (if you want the next page that is!).
 
