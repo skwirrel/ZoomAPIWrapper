@@ -29,7 +29,15 @@ This is a simple wrapper class to handle authenticating requests to the Zoom API
 
 Usage:
 
-$zoom = new ZoomAPIWrapper( '<your API key>', '<your API secret>' );
+$zoom = ZoomAPIWrapper::init( '<your account id>', '<your client id>', '<your client secret>' );
+
+// for subsequent calls within one hour you can reuse the OAuth token:
+
+$token = $zoom->getOAuthToken();
+
+// to be stored and then recreate the wrapper with the token later:
+
+$zoom = ZoomAPIWrapper::withToken( $token );
 
 // It is up to you to use the right method, path and specify the path parameters
 // to match the {placeholders} in the path.
@@ -51,17 +59,17 @@ if ($response === false) {
 class ZoomAPIWrapper {
 
     private $errors;
-    private $apiKey;
-    private $apiSecret;
+    private $accountId;
+    private $clientId;
+    private $clientSecret;
     private $baseUrl;
+    private $oAuthTokenUrl;
+    private $oAuthToken;
     private $timeout;
-    
-    public function __construct( $apiKey, $apiSecret, $options=array() ) {
-        $this->apiKey = $apiKey;
 
-        $this->apiSecret = $apiSecret;
-
+    private function __construct( $options=array() ) {
         $this->baseUrl = 'https://api.zoom.us/v2';
+        $this->oAuthTokenUrl = 'https://zoom.us/oauth/token';
         $this->timeout = 30;
         
         // Store any options if they map to valid properties
@@ -69,35 +77,55 @@ class ZoomAPIWrapper {
             if (property_exists($this, $key)) $this->$key = $value;
         }
     }
-
-    static function urlsafeB64Encode( $string ) {
-        return str_replace('=', '', strtr(base64_encode($string), '+/', '-_'));
+    
+    public static function init( $accountId, $clientId, $clientSecret, $options=array() ) {
+        $instance = new self($options);
+        $instance->accountId = $accountId;
+        $instance->clientId = $clientId;
+        $instance->clientSecret = $clientSecret;
+        $instance->oAuthToken = $instance->requestOAuthToken();
+        return $instance;
+    }
+    
+    public static function withToken( $oAuthToken, $options=array() ) {
+        $instance = new self($options);
+        $instance->oAuthToken = $oAuthToken;
+        return $instance;
     }
 
-    private function generateJWT() {
-        $token = array(
-            'iss' => $this->apiKey,
-            'exp' => time() + 60,
+    // Allow access for reuse within 60 minutes
+    public function getOAuthToken() {
+        return $this->oAuthToken;
+    }
+
+    private function requestOAuthToken() {
+
+        $url = $this->oAuthTokenUrl . '?grant_type=account_credentials&account_id=' . $this->accountId;
+        $basicAuth = base64_encode($this->clientId . ':' . $this->clientSecret);
+        $header =  array(
+            'Authorization: Basic ' . $basicAuth
         );
-        $header = array(
-            'typ' => 'JWT',
-            'alg' => 'HS256',
-        );
+        
+        $ch = curl_init();
 
-        $toSign = 
-            self::urlsafeB64Encode(json_encode($header))
-            .'.'.
-            self::urlsafeB64Encode(json_encode($token))
-        ;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true );
 
-        $signature = hash_hmac('SHA256', $toSign, $this->apiSecret, true);
+        $result = curl_exec($ch);
+        
+        curl_close($ch);
 
-        return $toSign . '.' . self::urlsafeB64Encode($signature);
+        $decoded = json_decode($result, true);
+
+        return $decoded['access_token'];
     }
 
     private function headers() {
         return array(
-            'Authorization: Bearer ' . $this->generateJWT(),
+            'Authorization: Bearer ' . $this->oAuthToken,
             'Content-Type: application/json',
             'Accept: application/json',
         );
