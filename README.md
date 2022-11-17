@@ -42,7 +42,7 @@ To make a call to the API you need to know the following things:
 All of these are nicely documented for you in the Zoom API Reference here:
 https://marketplace.zoom.us/docs/api-reference/zoom-api
 
-    $zoom = new ZoomAPIWrapper( <API_key>, <API_secret> );
+    $zoom = ZoomAPIWrapper::init( '<your account id>', '<your client id>', '<your client secret>' );
   
     $response = $zoom->doRequest(<METHOD>, <endpoint_path> [,<query_parameter_array> [,<path_parameter_array> [,<request_body_array_or_string>] ] ]);
     // <endpoint_path> is the path exactly as given in the Zoom API reference (including curly braces) e.g. "/users/{userId}/assistants"
