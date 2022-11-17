@@ -27,7 +27,7 @@ How to Get Your API Key
 
 You need to go to the Zoom "App Marketplace", log in using your zoom account and then select "Build App" from the "Develop" dropdown menu. This link should take you there: https://marketplace.zoom.us/develop/create
 
-Then you need to choose the JWT option for "server-to-server integration". Once you will out some basic information you will be taken to the "App Credentials" page which will give you your API key and API secret.
+Then you need to choose the *Server-to-Server OAuth app* option for "server-to-server integration". Once you fill out some basic information you will be taken to the "App Credentials" page which will give you the required information to use the API.
 
 Usage
 =====
@@ -42,7 +42,7 @@ To make a call to the API you need to know the following things:
 All of these are nicely documented for you in the Zoom API Reference here:
 https://marketplace.zoom.us/docs/api-reference/zoom-api
 
-    $zoom = new ZoomAPIWrapper( <API_key>, <API_secret> );
+    $zoom = ZoomAPIWrapper::init( '<your account id>', '<your client id>', '<your client secret>' );
   
     $response = $zoom->doRequest(<METHOD>, <endpoint_path> [,<query_parameter_array> [,<path_parameter_array> [,<request_body_array_or_string>] ] ]);
     // <endpoint_path> is the path exactly as given in the Zoom API reference (including curly braces) e.g. "/users/{userId}/assistants"
@@ -59,6 +59,14 @@ https://marketplace.zoom.us/docs/api-reference/zoom-api
   
     // If you want to know the HTTP response code you can get it like this...
     $httpResponse = $zoom->responseCode();
+
+    // for subsequent calls within one hour the OAuth token can be stored and reused:
+
+    $token = $zoom->getOAuthToken();
+
+    // and later:
+
+    $zoom = ZoomAPIWrapper::withToken(  $token );
   
   
 Examples
