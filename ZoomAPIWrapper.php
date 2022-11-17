@@ -59,9 +59,6 @@ if ($response === false) {
 class ZoomAPIWrapper {
 
     private $errors;
-    private $accountId;
-    private $clientId;
-    private $clientSecret;
     private $baseUrl;
     private $oAuthTokenUrl;
     private $oAuthToken;
@@ -80,10 +77,7 @@ class ZoomAPIWrapper {
     
     public static function init( $accountId, $clientId, $clientSecret, $options=array() ) {
         $instance = new self($options);
-        $instance->accountId = $accountId;
-        $instance->clientId = $clientId;
-        $instance->clientSecret = $clientSecret;
-        $instance->oAuthToken = $instance->requestOAuthToken();
+        $instance->oAuthToken = $instance->requestOAuthToken($accountId, $clientId, $clientSecret);
         return $instance;
     }
     
@@ -98,10 +92,10 @@ class ZoomAPIWrapper {
         return $this->oAuthToken;
     }
 
-    private function requestOAuthToken() {
+    private function requestOAuthToken( $accountId, $clientId, $clientSecret ) {
 
-        $url = $this->oAuthTokenUrl . '?grant_type=account_credentials&account_id=' . $this->accountId;
-        $basicAuth = base64_encode($this->clientId . ':' . $this->clientSecret);
+        $url = $this->oAuthTokenUrl . '?grant_type=account_credentials&account_id=' . $accountId;
+        $basicAuth = base64_encode($clientId . ':' . $clientSecret);
         $header =  array(
             'Authorization: Basic ' . $basicAuth
         );
