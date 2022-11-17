@@ -2,14 +2,16 @@
 
 require 'ZoomAPIWrapper.php';
 
-$apiKey = '<Place Your API Key Here>';
-$apiSecret = '<Place Your API Secret Here>';
+$accountId = '<Place Your Account ID>';
+$clientId = '<Place Your Client ID>';
+$clientSecret = '<Place Your Client Secret Here>';
 
 // Get key and secret from the command line if they have been provided there
-if (isset($argv[1])) $apiKey = $argv[1];
-if (isset($argv[2])) $apiSecret = $argv[2];
+if (isset($argv[1])) $accountId = $argv[1];
+if (isset($argv[2])) $clientId = $argv[2];
+if (isset($argv[3])) $clientSecret = $argv[3];
 
-$zoom = new ZoomAPIWrapper( $apiKey, $apiSecret );
+$zoom = ZoomAPIWrapper::init( $accountId, $clientId, $clientSecret );
 
 // It is up to you to use the right method, path and specify the request parameters
 // to match the {placeholders} in the path.
